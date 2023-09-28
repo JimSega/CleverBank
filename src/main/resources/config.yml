@@ -1,0 +1,7 @@
+interest: 1
+Connection: org.postgresql.Driver
+DriverManager: jdbc:postgresql://localhost/Counters
+ADDRESS: 127.0.0.1
+PORT: 1026
+user: postgres
+password: java
