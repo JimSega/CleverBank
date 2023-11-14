@@ -1,0 +1,15 @@
+﻿                                   Banks check 
+
+2023-09-27 23:35:52 
+
+Type transfer 
+
+Bank from Clever-Bank 
+
+Bank to SWB 
+
+Counter from 3469b8a4-717d-49e0-a3f6-3032011f71ed 
+
+Counter to 533ecfa6-1f19-41ae-a6ac-ef6f07452075 
+
+Quantity 0.20 BYN 

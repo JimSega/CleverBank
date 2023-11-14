@@ -1,0 +1,257 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 15.4
+-- Dumped by pg_dump version 15.4
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: banks; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.banks (
+    id integer NOT NULL,
+    bank character varying(50) NOT NULL,
+    name character varying(50) NOT NULL,
+    uuid uuid NOT NULL
+);
+
+
+ALTER TABLE public.banks OWNER TO postgres;
+
+--
+-- Name: clients; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.clients (
+    id integer NOT NULL,
+    nameuser character varying(50) NOT NULL,
+    currency character varying(3) NOT NULL,
+    counter uuid NOT NULL,
+    dateopen date NOT NULL,
+    money money,
+    password character varying DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public.clients OWNER TO postgres;
+
+--
+-- Name: clients_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.clients ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.clients_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: transactions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.transactions (
+    bankfrom character varying(50),
+    bankto character varying(50),
+    type character varying(10),
+    fromcounter uuid,
+    tocounter uuid,
+    summa money,
+    date date,
+    "time" time without time zone,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE public.transactions OWNER TO postgres;
+
+--
+-- Name: transactions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.transactions ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.transactions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Data for Name: banks; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.banks (id, bank, name, uuid) FROM stdin;
+1	Real	Semenov	623639a7-de19-4b7a-9265-d7dfb31461aa
+2	BSBS	Popov	cab5fec3-3fe9-4a85-9919-507f7b9f4b6b
+3	BSS	Popov	efb95ac4-6796-4695-8468-290d3a09d29f
+4	SWB	Popova	14a4b009-283a-4d81-9156-a4ca9ba4d958
+5	SWB	Ivanov	533ecfa6-1f19-41ae-a6ac-ef6f07452075
+0	TestBank	TestUser	11111111-1111-1111-1111-111111111111
+\.
+
+
+--
+-- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.clients (id, nameuser, currency, counter, dateopen, money, password) FROM stdin;
+4	Kreolova	BYN	65656b7b-5633-4a20-8fc2-1ff58178c76c	2023-08-29	35,00 ?	Kreolova
+6	Semenov	BYN	201a4284-ce47-47b4-8f9b-fb6365cda57c	2020-07-31	50,00 ?	Semenov
+7	Semenova	BYN	c134fc77-1c6c-4f5a-8c86-9255227ed930	2020-07-30	500,00 ?	Semenova
+1	Ivanov	USD	726da37f-88f9-47a7-9737-2bb4cac30cde	2023-01-29	35,69 ?	Ivanov
+3	Belov	BYN	3469b8a4-717d-49e0-a3f6-3032011f71ed	2023-06-29	136,00 ?	Belov
+5	TestUser	EUR	00000000-0000-0000-0000-000000000000	1970-01-01	1 000 130,00 ?	TestUser
+0	Petrov	BYN	e285b259-9fa7-4f50-85af-bf20273db010	2023-06-29	20,00 ?	Petrov
+\.
+
+
+--
+-- Data for Name: transactions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.transactions (bankfrom, bankto, type, fromcounter, tocounter, summa, date, "time", id) FROM stdin;
+Real	BSB	transfer	e285b259-9fa7-4f50-85af-bf20273db010	e285b259-9fa7-4f50-85af-bf20273db011	50,00 ?	2020-08-29	04:05:06	1
+Clever-Bank	SWB	transfer	e285b259-9fa7-4f50-85af-bf20273db010	a285b259-9fa7-4f50-85af-bf20273db011	50,00 ?	2021-08-29	14:05:06	2
+Clever-Bank	SWB	transfer	e285b259-9fa7-4f50-85af-bf20273db010	a285b259-9fa7-4f50-85af-bf20273db011	50,00 ?	2021-09-29	14:05:06	3
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	40,00 ?	2023-09-03	23:37:05.285873	18
+Clever-Bank	Clever-Bank	deposit	3469b8a4-717d-49e0-a3f6-3032011f71ed	3469b8a4-717d-49e0-a3f6-3032011f71ed	112,00 ?	2023-09-09	00:44:43.918757	19
+Clever-Bank	Clever-Bank	withdrawal	3469b8a4-717d-49e0-a3f6-3032011f71ed	3469b8a4-717d-49e0-a3f6-3032011f71ed	1,00 ?	2023-09-09	00:51:37.274505	20
+Clever-Bank	Clever-Bank	deposit	3469b8a4-717d-49e0-a3f6-3032011f71ed	3469b8a4-717d-49e0-a3f6-3032011f71ed	10,00 ?	2023-09-09	00:51:43.603511	21
+Clever-Bank	Clever-Bank	deposit	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	14,00 ?	2023-09-09	01:37:56.782063	22
+Clever-Bank	SWB	transfer	726da37f-88f9-47a7-9737-2bb4cac30cde	533ecfa6-1f19-41ae-a6ac-ef6f07452075	4,00 ?	2023-09-14	17:19:34.777137	23
+Clever-Bank	Clever-Bank	deposit	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	8,00 ?	2023-09-14	17:21:59.50983	24
+Clever-Bank	Real	transfer	e285b259-9fa7-4f50-85af-bf20273db010	623639a7-de19-4b7a-9265-d7dfb31461aa	1,00 ?	2023-09-14	17:24:55.166793	25
+Clever-Bank	BSBS	transfer	3469b8a4-717d-49e0-a3f6-3032011f71ed	cab5fec3-3fe9-4a85-9919-507f7b9f4b6b	22,00 ?	2023-09-14	17:26:26.054568	26
+Clever-Bank	BSS	transfer	e285b259-9fa7-4f50-85af-bf20273db010	efb95ac4-6796-4695-8468-290d3a09d29f	2,00 ?	2023-09-14	19:29:03.652464	27
+Clever-Bank	SWB	transfer	e285b259-9fa7-4f50-85af-bf20273db010	533ecfa6-1f19-41ae-a6ac-ef6f07452075	1,00 ?	2023-09-14	21:17:40.352028	28
+Clever-Bank	Clever-Bank	deposit	e285b259-9fa7-4f50-85af-bf20273db010	e285b259-9fa7-4f50-85af-bf20273db010	1,00 ?	2023-09-14	21:21:38.642033	29
+Clever-Bank	SWB	transfer	e285b259-9fa7-4f50-85af-bf20273db010	533ecfa6-1f19-41ae-a6ac-ef6f07452075	1,00 ?	2023-09-14	21:21:41.784042	30
+Clever-Bank	Clever-Bank	deposit	e285b259-9fa7-4f50-85af-bf20273db010	e285b259-9fa7-4f50-85af-bf20273db010	1,00 ?	2023-09-14	21:23:59.407752	31
+Clever-Bank	Clever-Bank	withdrawal	e285b259-9fa7-4f50-85af-bf20273db010	e285b259-9fa7-4f50-85af-bf20273db010	1,00 ?	2023-09-14	21:30:07.465976	32
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	1,00 ?	2023-09-15	16:42:25.201152	33
+Clever-Bank	Clever-Bank	deposit	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	1,00 ?	2023-09-15	16:46:02.402603	34
+Clever-Bank	Clever-Bank	deposit	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	101,00 ?	2023-09-15	17:10:40.210302	35
+Clever-Bank	Clever-Bank	deposit	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	1,20 ?	2023-09-15	18:22:43.191446	36
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	1,30 ?	2023-09-17	17:47:14.74955	37
+Clever-Bank	Clever-Bank	deposit	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	1,50 ?	2023-09-17	17:48:47.36368	38
+Clever-Bank	Clever-Bank	deposit	e285b259-9fa7-4f50-85af-bf20273db010	e285b259-9fa7-4f50-85af-bf20273db010	5,00 ?	2023-09-17	17:49:19.740736	39
+Clever-Bank	Clever-Bank	deposit	3469b8a4-717d-49e0-a3f6-3032011f71ed	3469b8a4-717d-49e0-a3f6-3032011f71ed	50,00 ?	2023-09-17	17:56:07.157248	40
+Clever-Bank	Clever-Bank	withdrawal	3469b8a4-717d-49e0-a3f6-3032011f71ed	3469b8a4-717d-49e0-a3f6-3032011f71ed	50,00 ?	2023-09-17	17:56:14.610657	41
+Clever-Bank	SWB	transfer	e285b259-9fa7-4f50-85af-bf20273db010	533ecfa6-1f19-41ae-a6ac-ef6f07452075	2,50 ?	2023-09-17	18:00:30.42004	42
+Clever-Bank	Clever-Bank	withdrawal	e285b259-9fa7-4f50-85af-bf20273db010	e285b259-9fa7-4f50-85af-bf20273db010	2,50 ?	2023-09-17	18:00:32.197294	43
+Clever-Bank	Clever-Bank	deposit	e285b259-9fa7-4f50-85af-bf20273db010	e285b259-9fa7-4f50-85af-bf20273db010	8,00 ?	2023-09-17	18:05:44.402104	44
+Clever-Bank	Clever-Bank	withdrawal	e285b259-9fa7-4f50-85af-bf20273db010	e285b259-9fa7-4f50-85af-bf20273db010	3,00 ?	2023-09-17	18:06:14.992914	45
+Clever-Bank	Clever-Bank	deposit	e285b259-9fa7-4f50-85af-bf20273db010	e285b259-9fa7-4f50-85af-bf20273db010	5,00 ?	2023-09-17	18:07:23.495562	46
+Clever-Bank	Clever-Bank	withdrawal	e285b259-9fa7-4f50-85af-bf20273db010	e285b259-9fa7-4f50-85af-bf20273db010	8,00 ?	2023-09-17	18:07:29.015705	47
+Clever-Bank	Clever-Bank	deposit	3469b8a4-717d-49e0-a3f6-3032011f71ed	3469b8a4-717d-49e0-a3f6-3032011f71ed	15,00 ?	2023-09-18	20:19:14.098819	48
+Clever-Bank	Clever-Bank	deposit	3469b8a4-717d-49e0-a3f6-3032011f71ed	3469b8a4-717d-49e0-a3f6-3032011f71ed	1,12 ?	2023-09-18	20:35:54.977072	49
+Clever-Bank	Clever-Bank	withdrawal	3469b8a4-717d-49e0-a3f6-3032011f71ed	3469b8a4-717d-49e0-a3f6-3032011f71ed	1,00 ?	2023-09-18	20:41:04.98651	50
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	0,10 ?	2023-09-18	21:22:38.044668	51
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	0,40 ?	2023-09-18	21:24:10.052285	52
+Clever-Bank	Clever-Bank	deposit	e285b259-9fa7-4f50-85af-bf20273db010	e285b259-9fa7-4f50-85af-bf20273db010	14,00 ?	2023-09-18	21:28:00.059687	53
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	4,00 ?	2023-09-18	21:31:05.448929	54
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	1,00 ?	2023-09-18	21:32:02.997429	55
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	8,00 ?	2023-09-18	21:33:42.998634	56
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	1,00 ?	2023-09-18	23:17:17.279068	57
+Clever-Bank	Clever-Bank	deposit	e285b259-9fa7-4f50-85af-bf20273db010	e285b259-9fa7-4f50-85af-bf20273db010	4,00 ?	2023-09-18	23:20:05.205301	58
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	1,00 ?	2023-09-18	23:22:31.774373	59
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	10,02 ?	2023-09-20	00:04:27.263611	60
+Clever-Bank	Clever-Bank	deposit	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	10,00 ?	2023-09-20	00:07:52.13238	61
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	119,88 ?	2023-09-20	00:15:18.244941	62
+Clever-Bank	Clever-Bank	deposit	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	10,00 ?	2023-09-20	00:16:17.352501	63
+Clever-Bank	Real	transfer	726da37f-88f9-47a7-9737-2bb4cac30cde	623639a7-de19-4b7a-9265-d7dfb31461aa	10,00 ?	2023-09-20	00:17:33.736197	64
+Clever-Bank	Clever-Bank	deposit	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	15,00 ?	2023-09-20	21:31:29.780474	65
+Clever-Bank	BSS	transfer	65656b7b-5633-4a20-8fc2-1ff58178c76c	efb95ac4-6796-4695-8468-290d3a09d29f	15,00 ?	2023-09-20	21:36:17.188109	66
+Clever-Bank	Clever-Bank	deposit	3469b8a4-717d-49e0-a3f6-3032011f71ed	3469b8a4-717d-49e0-a3f6-3032011f71ed	1,00 ?	2023-09-20	22:47:35.240214	67
+Clever-Bank	Clever-Bank	deposit	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	8,00 ?	2023-09-20	22:49:49.197391	68
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	1,00 ?	2023-09-20	22:52:05.624536	69
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	1,00 ?	2023-09-20	23:06:05.902686	70
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	0,10 ?	2023-09-20	23:14:30.669904	71
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	0,10 ?	2023-09-20	23:16:18.491642	72
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	0,10 ?	2023-09-20	23:20:00.726717	73
+Clever-Bank	SWB	transfer	3469b8a4-717d-49e0-a3f6-3032011f71ed	533ecfa6-1f19-41ae-a6ac-ef6f07452075	0,50 ?	2023-09-20	23:27:40.770987	74
+Clever-Bank	Clever-Bank	withdrawal	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	0,01 ?	2023-09-20	23:44:32.23905	75
+Clever-Bank	Clever-Bank	deposit	3469b8a4-717d-49e0-a3f6-3032011f71ed	3469b8a4-717d-49e0-a3f6-3032011f71ed	20,00 ?	2023-09-20	23:49:45	76
+Clever-Bank	Clever-Bank	withdrawal	00000000-0000-0000-0000-000000000000	00000000-0000-0000-0000-000000000000	10,00 ?	2023-09-22	15:18:25	77
+Clever-Bank	Clever-Bank	withdrawal	00000000-0000-0000-0000-000000000000	00000000-0000-0000-0000-000000000000	10,00 ?	2023-09-22	15:23:03	78
+Clever-Bank	TestBank	transfer	00000000-0000-0000-0000-000000000000	11111111-1111-1111-1111-111111111111	10,00 ?	2023-09-22	20:57:35	79
+Clever-Bank	Clever-Bank	withdrawal	00000000-0000-0000-0000-000000000000	00000000-0000-0000-0000-000000000000	10,00 ?	2023-09-22	22:31:58	80
+Clever-Bank	Clever-Bank	deposit	00000000-0000-0000-0000-000000000000	00000000-0000-0000-0000-000000000000	10,00 ?	2023-09-22	22:31:58	81
+Clever-Bank	Clever-Bank	deposit	726da37f-88f9-47a7-9737-2bb4cac30cde	726da37f-88f9-47a7-9737-2bb4cac30cde	15,00 ?	2023-09-27	18:01:45	82
+Clever-Bank	Clever-Bank	withdrawal	00000000-0000-0000-0000-000000000000	00000000-0000-0000-0000-000000000000	10,00 ?	2023-09-27	23:31:28	83
+Clever-Bank	Clever-Bank	deposit	00000000-0000-0000-0000-000000000000	00000000-0000-0000-0000-000000000000	10,00 ?	2023-09-27	23:31:29	84
+Clever-Bank	Clever-Bank	deposit	3469b8a4-717d-49e0-a3f6-3032011f71ed	3469b8a4-717d-49e0-a3f6-3032011f71ed	0,58 ?	2023-09-27	23:33:49	85
+Clever-Bank	SWB	transfer	3469b8a4-717d-49e0-a3f6-3032011f71ed	533ecfa6-1f19-41ae-a6ac-ef6f07452075	0,20 ?	2023-09-27	23:35:52	86
+Clever-Bank	Clever-Bank	withdrawal	00000000-0000-0000-0000-000000000000	00000000-0000-0000-0000-000000000000	10,00 ?	2023-09-27	23:36:27	87
+Clever-Bank	Clever-Bank	deposit	00000000-0000-0000-0000-000000000000	00000000-0000-0000-0000-000000000000	10,00 ?	2023-09-27	23:36:27	88
+Clever-Bank	Clever-Bank	withdrawal	00000000-0000-0000-0000-000000000000	00000000-0000-0000-0000-000000000000	10,00 ?	2023-09-27	23:37:49	89
+Clever-Bank	Clever-Bank	deposit	00000000-0000-0000-0000-000000000000	00000000-0000-0000-0000-000000000000	10,00 ?	2023-09-27	23:37:50	90
+Clever-Bank	Clever-Bank	withdrawal	00000000-0000-0000-0000-000000000000	00000000-0000-0000-0000-000000000000	10,00 ?	2023-09-28	00:12:44	91
+Clever-Bank	Clever-Bank	deposit	00000000-0000-0000-0000-000000000000	00000000-0000-0000-0000-000000000000	10,00 ?	2023-09-28	00:12:44	92
+\.
+
+
+--
+-- Name: clients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.clients_id_seq', 5, true);
+
+
+--
+-- Name: transactions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.transactions_id_seq', 92, true);
+
+
+--
+-- Name: banks banks_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.banks
+    ADD CONSTRAINT banks_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: transactions transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transactions
+    ADD CONSTRAINT transactions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: clients users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.clients
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
